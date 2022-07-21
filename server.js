@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import dbNotes from './db/db.json' assert { type: 'json' };
 import { stringify } from "querystring";
+import uniqid from 'uniqid';
+
 
 // Set PORT variable
 const PORT = process.env.PORT || 3001;
@@ -33,7 +35,8 @@ app.get('/api/notes', (req, res) => res.json(dbNotes));
 app.post('/api/notes', (req, res) => {
     console.log(`${req.method} request was recieved`);
     const newNote = req.body;
-    console.log(`${newNote.title}, ${newNote.text}`);
+    newNote['id'] = uniqid();
+    console.log(`${newNote.title}, ${newNote.text}, ${newNote.id}`);
     res.json(dbNotes);
     console.log(dbNotes);
     dbNotes.push(newNote);
