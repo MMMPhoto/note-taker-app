@@ -41,8 +41,7 @@ const saveNote = (note) =>
     },
     body: JSON.stringify(note),
     
-  }, console.log(note)
-  );
+  });
 
 const deleteNote = (id) =>
   fetch(`/api/notes/${id}`, {

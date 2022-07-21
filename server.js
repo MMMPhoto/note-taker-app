@@ -1,13 +1,11 @@
 // Import Modules and files
-import express, { json } from "express";
+import express from "express";
 import fs from 'fs';
-import path, { parse } from 'path';
+import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import dbNotes from './db/db.json' assert { type: 'json' };
-import { stringify } from "querystring";
 import uniqid from 'uniqid';
-
 
 // Set PORT variable
 const PORT = process.env.PORT || 3001;
@@ -17,8 +15,10 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Set public folder on port
+// Set express static route
 app.use(express.static('public'));
+
+// Set express functions
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,14 +33,10 @@ app.get('/api/notes', (req, res) => res.json(dbNotes));
 
 // POST API Route for notes
 app.post('/api/notes', (req, res) => {
-    console.log(`${req.method} request recieved`);
     const newNote = req.body;
     newNote['id'] = uniqid();
-    console.log(`${newNote.title}, ${newNote.text}, ${newNote.id}`);
     res.json(dbNotes);
-    console.log(dbNotes);
     dbNotes.push(newNote);
-    console.log(dbNotes);
     fs.writeFile('./db/db.json', JSON.stringify(dbNotes), err => 
         err ? console.log(err) : console.log('New note written to database')
     );
@@ -48,21 +44,13 @@ app.post('/api/notes', (req, res) => {
 
 // DELETE API Route for notes
 app.delete('/api/notes/:id', (req, res) => {
-    console.log(`${req.method} request recieved`);
     res.json(dbNotes);
-    console.log(dbNotes);
     const deleteIndex = dbNotes.findIndex(note => {return note.id === req.params.id});
-    console.log(deleteIndex);
-    console.log(dbNotes[deleteIndex]);
     dbNotes.splice(deleteIndex, 1);
-    console.log(dbNotes);
     fs.writeFile('./db/db.json', JSON.stringify(dbNotes), err => 
         err ? console.log(err) : console.log('Note deleted from database')
     );
-
-
 });
-
 
 // Set listening on PORT
 app.listen(PORT, () => 
