@@ -33,7 +33,7 @@ app.get('/api/notes', (req, res) => res.json(dbNotes));
 
 // POST API Route for notes
 app.post('/api/notes', (req, res) => {
-    console.log(`${req.method} request was recieved`);
+    console.log(`${req.method} request recieved`);
     const newNote = req.body;
     newNote['id'] = uniqid();
     console.log(`${newNote.title}, ${newNote.text}, ${newNote.id}`);
@@ -45,6 +45,24 @@ app.post('/api/notes', (req, res) => {
         err ? console.log(err) : console.log('New note written to database')
     );
 });
+
+// DELETE API Route for notes
+app.delete('/api/notes/:id', (req, res) => {
+    console.log(`${req.method} request recieved`);
+    res.json(dbNotes);
+    console.log(dbNotes);
+    const deleteIndex = dbNotes.findIndex(note => {return note.id === req.params.id});
+    console.log(deleteIndex);
+    console.log(dbNotes[deleteIndex]);
+    dbNotes.splice(deleteIndex, 1);
+    console.log(dbNotes);
+    fs.writeFile('./db/db.json', JSON.stringify(dbNotes), err => 
+        err ? console.log(err) : console.log('Note deleted from database')
+    );
+
+
+});
+
 
 // Set listening on PORT
 app.listen(PORT, () => 
